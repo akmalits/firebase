@@ -1,5 +1,6 @@
 import 'package:fireeeee/provider/realtime_database_students_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:fireeeee/model/student_model.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -18,115 +19,55 @@ class RealTimeDatabase extends StatelessWidget {
         builder: (context, provider, child) {
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Realtime Database Stateless'),
+              title: const Text('Realtime Database'),
             ),
             body: SingleChildScrollView(
               child: Column(
                 children: [
-                  // SfCartesianChart(
-                  //     primaryXAxis: CategoryAxis(title: AxisTitle(text: 'Time')),
-                  //     // Enable legend
-                  //     palette: provider.color,
-                  //     legend: Legend(
-                  //       isVisible: true,
-                  //       position: LegendPosition.bottom,
-                  //       overflowMode: LegendItemOverflowMode.wrap,
-                  //     ),
-                  //     // Enable tooltip
-                  //     tooltipBehavior: TooltipBehavior(enable: true, header: '', canShowMarker: false),
-                  //     plotAreaBorderWidth: 0,
-                  //     primaryYAxis: NumericAxis(
-                  //       edgeLabelPlacement: EdgeLabelPlacement.shift,
-                  //       majorGridLines: const MajorGridLines(width: 0),
-                  //       // title: AxisTitle(text: 'Value', textStyle: AppTextStyles.baseTextStyle(fontWeight: FontWeight.w500)),
-                  //     ),
-                  //     trackballBehavior: provider.trackballBehaviors,
-                  //     zoomPanBehavior: ZoomPanBehavior(enablePinching: true, enablePanning: true),
-                  //     series: List.generate(provider.studentList!.length, (index) {
-                  //       return LineSeries<Student, String>(
-                  //           dataSource: provider.studentList,
-                  //           xValueMapper: (Student data, _) => data.studentData!.age,
-                  //           yValueMapper: (Student data, _) => num.parse(data.studentData!.age!),
-                  //           name: provider.studentList![index].studentData!.name!,
-                  //           enableTooltip: true,
-                  //           markerSettings: const MarkerSettings(isVisible: true, width: 2),
-                  //           animationDuration: 2500,
-                  //           width: 5,
-                  //           legendIconType: LegendIconType.circle,
-                  //           // Enable data label
-                  //           dataLabelSettings: const DataLabelSettings(isVisible: false));
-                  //     })
-                  //
-                  //   // series: <ChartSeries<Datas, String>>
-                  //   // [
-                  //   //   LineSeries<Datas, String>(
-                  //   //       dataSource: provider.listData,
-                  //   //       color: fourthColor,
-                  //   //       xValueMapper: (Datas data, _) {
-                  //   //         if (provider.minutes != null || provider.hour != null) {
-                  //   //           var date = DateFormat("yyyy-MM-ddTHH:mm:ss").parse(data.times!, true);
-                  //   //           var n = DateFormat("HH:mm:ss").format(date.toLocal());
-                  //   //           return n;
-                  //   //         } else {
-                  //   //           var date = DateFormat("yyyy-MM-ddTHH:mm:ss").parse(data.times!, true);
-                  //   //           var n = DateFormat("MM-dd HH:mm:ss").format(date.toLocal());
-                  //   //           return n;
-                  //   //         }
-                  //   //       },
-                  //   //       yValueMapper: (Datas data, _) => data.val,
-                  //   //       name: 'Telemetry',
-                  //   //       enableTooltip: true,
-                  //   //       animationDuration: 2500,
-                  //   //       width: 1,
-                  //   //       // Enable data label
-                  //   //       dataLabelSettings: DataLabelSettings(isVisible: false)),
-                  //   //   LineSeries<Datas, String>(
-                  //   //       dataSource: provider.allData![2].datas!,
-                  //   //       color: Colors.red,
-                  //   //       xValueMapper: (Datas data, _) {
-                  //   //         if (provider.minutes != null || provider.hour != null) {
-                  //   //           var date = DateFormat("yyyy-MM-ddTHH:mm:ss").parse(data.times!, true);
-                  //   //           var n = DateFormat("HH:mm:ss").format(date.toLocal());
-                  //   //           return n;
-                  //   //         } else {
-                  //   //           var date = DateFormat("yyyy-MM-ddTHH:mm:ss").parse(data.times!, true);
-                  //   //           var n = DateFormat("MM-dd HH:mm:ss").format(date.toLocal());
-                  //   //           return n;
-                  //   //         }
-                  //   //       },
-                  //   //       yValueMapper: (Datas data, _) => data.val,
-                  //   //       name: 'Telemetry',
-                  //   //       enableTooltip: true,
-                  //   //       animationDuration: 2500,
-                  //   //       width: 1,
-                  //   //       // Enable data label
-                  //   //       dataLabelSettings: DataLabelSettings(isVisible: false))
-                  //   // ],
-                  // ),
                   SfRadialGauge(
                     title: GaugeTitle(
-                        text: provider.studentList!.last.studentData!.age!,
-                        textStyle:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                        text: provider.studentList!.isEmpty
+                            ? ''
+                            : provider.studentList!.last.studentData!.age!,
+                        textStyle: const TextStyle(
+                            fontSize: 20.0, fontWeight: FontWeight.bold)),
                     enableLoadingAnimation: true,
                     animationDuration: 4500,
                     axes: <RadialAxis>[
-                      RadialAxis(minimum: 0, maximum: 14, pointers: <GaugePointer>[
-                        NeedlePointer(value: double.parse(provider.studentList!.last.studentData!.age!), enableAnimation: true)
-                      ], ranges: <GaugeRange>[
-                        GaugeRange(startValue: 0, endValue: 5, color: Colors.green),
-                        GaugeRange(startValue: 5, endValue: 10, color: Colors.orange),
-                        GaugeRange(startValue: 10, endValue: 14, color: Colors.red)
-                      ], annotations: <GaugeAnnotation>[
-                        GaugeAnnotation(
-                            widget: Text(
-                              '${provider.studentList!.last.studentData!.age!} MPH',
-                              style:
-                              TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                            ),
-                            positionFactor: 0.5,
-                            angle: 90)
-                      ])
+                      RadialAxis(
+                          minimum: 0,
+                          maximum: 14,
+                          pointers: <GaugePointer>[
+                            NeedlePointer(
+                                value: provider.studentList!.isEmpty
+                                    ? 0.0
+                                    : double.parse(provider
+                                        .studentList!.last.studentData!.age!),
+                                enableAnimation: true)
+                          ],
+                          ranges: <GaugeRange>[
+                            GaugeRange(
+                                startValue: 0,
+                                endValue: 5,
+                                color: Colors.green),
+                            GaugeRange(
+                                startValue: 5,
+                                endValue: 10,
+                                color: Colors.orange),
+                            GaugeRange(
+                                startValue: 10, endValue: 14, color: Colors.red)
+                          ],
+                          annotations: <GaugeAnnotation>[
+                            GaugeAnnotation(
+                                widget: Text(
+                                  '${provider.studentList!.isEmpty ? '' : provider.studentList!.last.studentData!.age!} pH',
+                                  style: const TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                positionFactor: 0.5,
+                                angle: 90)
+                          ])
                     ],
                   ),
                   ListView.builder(
@@ -143,18 +84,61 @@ class RealTimeDatabase extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(provider.studentList!.last.studentData!.name.toString(), style: TextStyle(fontSize: 20),),
-                            SizedBox(height: 8,),
-                            Text('${provider.studentList!.last.studentData!.age.toString()} MPH', style: TextStyle(fontSize: 18)),
+                            Text(
+                                '${provider.studentList!.isEmpty ? '' : provider.studentList!.last.studentData!.age.toString()} pH',
+                                style: const TextStyle(fontSize: 18)),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Text(
+                                provider.studentList!.isEmpty
+                                    ? ''
+                                    : DateFormat("dd-MM-yyyy HH:mm:ss").format(
+                                        DateFormat("yyyy-MM-ddTHH:mm:ss").parse(
+                                            provider.studentList!.last
+                                                .studentData!.timestamp
+                                                .toString(),
+                                            true)),
+                                style: const TextStyle(fontSize: 18)),
                           ],
                         ),
                       );
                     },
                     itemCount: 1,
                   ),
+                  SfCartesianChart(
+                      primaryXAxis: const CategoryAxis(
+                        title: AxisTitle(text: 'Time'),
+                      ),
+                      // Chart title
+                      title: const ChartTitle(text: 'pH Historical Data Chart'),
+                      // Enable legend
+                      legend: const Legend(isVisible: true),
+                      // Enable tooltip
+                      tooltipBehavior: TooltipBehavior(enable: true),
+                      series: <CartesianSeries<Student, String>>[
+                        LineSeries<Student, String>(
+                            dataSource: provider.studentList!,
+                            xValueMapper: (Student student, _) {
+                              final timestampString =
+                                  student.studentData!.timestamp;
+                              if (timestampString != null) {
+                                final date = DateFormat("yyyy-MM-ddTHH:mm:ss")
+                                    .parse(timestampString, true);
+                                return DateFormat("HH:mm:ss").format(date);
+                              }
+                              return '';
+                            },
+                            yValueMapper: (Student student, _) => double.parse(
+                                student.studentData!.age.toString()),
+                            name: 'pH',
+                            // Enable data label
+                            dataLabelSettings:
+                                const DataLabelSettings(isVisible: true))
+                      ]),
                 ],
               ),
             ),
