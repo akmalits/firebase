@@ -1,10 +1,8 @@
 import 'package:fireeeee/model/sensor_model.dart';
 import 'package:fireeeee/provider/realtime_database_sensor_provider.dart';
-import 'package:fireeeee/screen/chart_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:fireeeee/model/student_model.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
@@ -219,69 +217,68 @@ class RealTimeDatabase extends StatelessWidget {
                     },
                     itemCount: 1,
                   ),
-                  //   SfCartesianChart(
-                  //       primaryXAxis: const CategoryAxis(
-                  //         title: AxisTitle(text: 'Time'),
-                  //       ),
-                  //       // Chart title
-                  //       title: const ChartTitle(text: 'pH Historical Data Chart'),
-                  //       // Enable legend
-                  //       legend: const Legend(isVisible: true),
-                  //       // Enable tooltip
-                  //       tooltipBehavior: TooltipBehavior(enable: true),
-                  //       series: <CartesianSeries<Sensor, String>>[
-                  //         LineSeries<Sensor, String>(
-                  //             dataSource: provider.sensorList!,
-                  //             xValueMapper: (Sensor sensor, _) {
-                  //               final timestampString =
-                  //                   sensor.sensorData!.timestamp;
-                  //               if (timestampString != null) {
-                  //                 final date = DateFormat("yyyy-MM-ddTHH:mm:ss")
-                  //                     .parse(timestampString, true);
-                  //                 return DateFormat("HH:mm:ss").format(date);
-                  //               }
-                  //               return '';
-                  //             },
-                  //             yValueMapper: (Sensor sensor, _) =>
-                  //                 double.parse(sensor.sensorData!.ph.toString()),
-                  //             name: 'pH',
-                  //             // Enable data label
-                  //             dataLabelSettings:
-                  //                 const DataLabelSettings(isVisible: true))
-                  //       ]),
-                  //   SfCartesianChart(
-                  //       primaryXAxis: const CategoryAxis(
-                  //         title: AxisTitle(text: 'Time'),
-                  //       ),
-                  //       // Chart title
-                  //       title: const ChartTitle(
-                  //           text: 'Temperature Historical Data Chart'),
-                  //       // Enable legend
-                  //       legend: const Legend(isVisible: true),
+                  SfCartesianChart(
+                      primaryXAxis: const CategoryAxis(
+                        title: AxisTitle(text: 'Time'),
+                      ),
+                      // Chart title
+                      title: const ChartTitle(text: 'pH Historical Data Chart'),
+                      // Enable legend
+                      legend: const Legend(isVisible: true),
+                      // Enable tooltip
+                      tooltipBehavior: TooltipBehavior(enable: true),
+                      series: <CartesianSeries<Sensor, String>>[
+                        LineSeries<Sensor, String>(
+                            dataSource: provider.sensorList!,
+                            xValueMapper: (Sensor sensor, _) {
+                              final timestampString =
+                                  sensor.sensorData!.timestamp;
+                              if (timestampString != null) {
+                                final date = DateFormat("yyyy-MM-ddTHH:mm:ss")
+                                    .parse(timestampString, true);
+                                return DateFormat("HH:mm:ss").format(date);
+                              }
+                              return '';
+                            },
+                            yValueMapper: (Sensor sensor, _) =>
+                                double.parse(sensor.sensorData!.ph.toString()),
+                            name: 'pH',
+                            // Enable data label
+                            dataLabelSettings:
+                                const DataLabelSettings(isVisible: false))
+                      ]),
+                  SfCartesianChart(
+                      primaryXAxis: const CategoryAxis(
+                        title: AxisTitle(text: 'Time'),
+                      ),
+                      // Chart title
+                      title: const ChartTitle(
+                          text: 'Temperature Historical Data Chart'),
+                      // Enable legend
+                      legend: const Legend(isVisible: true),
 
-                  //       // Enable tooltip
-                  //       tooltipBehavior: TooltipBehavior(enable: true),
-                  //       series: <CartesianSeries<Sensor, String>>[
-                  //         LineSeries<Sensor, String>(
-                  //             dataSource: provider.sensorList!,
-                  //             xValueMapper: (Sensor sensor, _) {
-                  //               final timestampString =
-                  //                   sensor.sensorData!.timestamp;
-                  //               if (timestampString != null) {
-                  //                 final date = DateFormat("yyyy-MM-ddTHH:mm:ss")
-                  //                     .parse(timestampString, true);
-                  //                 return DateFormat("HH:mm:ss").format(date);
-                  //               }
-                  //               return '';
-                  //             },
-                  //             yValueMapper: (Sensor sensor, _) => double.parse(
-                  //                 sensor.sensorData!.temp.toString()),
-                  //             name: 'Temperature',
-                  //             // Enable data label
-                  //             dataLabelSettings:
-                  //                 const DataLabelSettings(isVisible: true))
-                  //       ]),
-                  ChartWidget(),
+                      // Enable tooltip
+                      tooltipBehavior: TooltipBehavior(enable: true),
+                      series: <CartesianSeries<Sensor, String>>[
+                        LineSeries<Sensor, String>(
+                            dataSource: provider.sensorList!,
+                            xValueMapper: (Sensor sensor, _) {
+                              final timestampString =
+                                  sensor.sensorData!.timestamp;
+                              if (timestampString != null) {
+                                final date = DateFormat("yyyy-MM-ddTHH:mm:ss")
+                                    .parse(timestampString, true);
+                                return DateFormat("HH:mm:ss").format(date);
+                              }
+                              return '';
+                            },
+                            yValueMapper: (Sensor sensor, _) => double.parse(
+                                sensor.sensorData!.temp.toString()),
+                            name: 'Temperature',
+                            // Enable data label
+                            dataLabelSettings:
+                                const DataLabelSettings(isVisible: true))
+                      ]),
                 ],
               ),
             ),
@@ -291,27 +288,27 @@ class RealTimeDatabase extends StatelessWidget {
     );
   }
 
-  Widget studentWidget(BuildContext context, Student student) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.all(8),
-      margin: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Column(
-            children: [
-              Text(student.studentData!.name.toString()),
-              Text(student.studentData!.age.toString()),
-              Text(student.studentData!.subject.toString()),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget studentWidget(BuildContext context, Student student) {
+  //   return Container(
+  //     width: MediaQuery.of(context).size.width,
+  //     padding: const EdgeInsets.all(8),
+  //     margin: const EdgeInsets.all(8),
+  //     decoration: BoxDecoration(
+  //       color: Colors.grey[200],
+  //       borderRadius: BorderRadius.circular(8),
+  //     ),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //       children: [
+  //         Column(
+  //           children: [
+  //             Text(student.studentData!.name.toString()),
+  //             Text(student.studentData!.age.toString()),
+  //             Text(student.studentData!.subject.toString()),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 }

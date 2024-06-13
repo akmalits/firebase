@@ -8,7 +8,8 @@ class RealTimeDatabaseProviderSensor extends ChangeNotifier {
     fetchData();
   }
 
-  DatabaseReference dbRef = FirebaseDatabase.instance.ref();
+  DatabaseReference dbRef =
+      FirebaseDatabase.instance.ref(); // Database reference object
 
   List<Sensor>? _sensorList = [];
   List<Sensor>? get sensorList => _sensorList;
@@ -31,13 +32,14 @@ class RealTimeDatabaseProviderSensor extends ChangeNotifier {
         sensorData: sensorData,
       ); // Create a Student object
 
-      if (_sensorList!.length > 30) {
+      if (_sensorList!.length > 60) {
+        // If the list has more than 60 students
         _sensorList!.removeAt(0);
+        notifyListeners();
+      } else {
+        _sensorList!.add(sensor); // Add the student object to the list
+        notifyListeners();
       }
-
-      _sensorList!.add(sensor); // Add the student object to the list
-
-      notifyListeners();
     });
   }
 
