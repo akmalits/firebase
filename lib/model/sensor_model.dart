@@ -17,7 +17,7 @@ class SensorData {
 
   SensorData.fromJson(Map<dynamic, dynamic> json) {
     deviceId = json['deviceId'];
-    ph = json['ph'];
+    ph = json['pH'];
     temp = json['temp'];
     humidity = json['humidity'];
     timestamp = json['timestamp'];

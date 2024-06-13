@@ -1,17 +1,17 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'package:fireeeee/model/student_model.dart';
+import 'package:fireeeee/model/sensor_model.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class RealTimeDatabaseProviderStudent extends ChangeNotifier {
-  RealTimeDatabaseProviderStudent() {
+class RealTimeDatabaseProviderSensor extends ChangeNotifier {
+  RealTimeDatabaseProviderSensor() {
     fetchData();
   }
 
   DatabaseReference dbRef = FirebaseDatabase.instance.ref();
 
-  List<Student>? _studentList = [];
-  List<Student>? get studentList => _studentList;
+  List<Sensor>? _sensorList = [];
+  List<Sensor>? get sensorList => _sensorList;
 
   bool? _condition = false;
   bool? get condition => _condition;
@@ -22,16 +22,20 @@ class RealTimeDatabaseProviderStudent extends ChangeNotifier {
   }
 
   fetchData() {
-    dbRef.child("Students").onChildAdded.listen((data) {
+    dbRef.child("Sensors").onChildAdded.listen((data) {
       // Listen to the child added event
-      StudentData studentData = StudentData.fromJson(
+      SensorData sensorData = SensorData.fromJson(
           data.snapshot.value as Map); // Convert the data to StudentData object
-      Student student = Student(
+      Sensor sensor = Sensor(
         key: data.snapshot.key,
-        studentData: studentData,
+        sensorData: sensorData,
       ); // Create a Student object
 
-      _studentList!.add(student); // Add the student object to the list
+      if (_sensorList!.length > 30) {
+        _sensorList!.removeAt(0);
+      }
+
+      _sensorList!.add(sensor); // Add the student object to the list
 
       notifyListeners();
     });
