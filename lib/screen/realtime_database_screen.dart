@@ -222,7 +222,7 @@ class RealTimeDatabase extends StatelessWidget {
                         title: AxisTitle(text: 'Time'),
                       ),
                       // Chart title
-                      title: const ChartTitle(text: 'pH Historical Data Chart'),
+                      title: const ChartTitle(text: 'pH Data Chart'),
                       // Enable legend
                       legend: const Legend(isVisible: true),
                       // Enable tooltip
@@ -245,7 +245,7 @@ class RealTimeDatabase extends StatelessWidget {
                             name: 'pH',
                             // Enable data label
                             dataLabelSettings:
-                                const DataLabelSettings(isVisible: false))
+                                const DataLabelSettings(isVisible: true))
                       ]),
                   SfCartesianChart(
                       primaryXAxis: const CategoryAxis(
@@ -253,7 +253,7 @@ class RealTimeDatabase extends StatelessWidget {
                       ),
                       // Chart title
                       title: const ChartTitle(
-                          text: 'Temperature Historical Data Chart'),
+                          text: 'Temperature Data Chart'),
                       // Enable legend
                       legend: const Legend(isVisible: true),
 
@@ -275,6 +275,7 @@ class RealTimeDatabase extends StatelessWidget {
                             yValueMapper: (Sensor sensor, _) => double.parse(
                                 sensor.sensorData!.temp.toString()),
                             name: 'Temperature',
+                            color: Colors.red,
                             // Enable data label
                             dataLabelSettings:
                                 const DataLabelSettings(isVisible: true))
@@ -287,28 +288,4 @@ class RealTimeDatabase extends StatelessWidget {
       ),
     );
   }
-
-  // Widget studentWidget(BuildContext context, Student student) {
-  //   return Container(
-  //     width: MediaQuery.of(context).size.width,
-  //     padding: const EdgeInsets.all(8),
-  //     margin: const EdgeInsets.all(8),
-  //     decoration: BoxDecoration(
-  //       color: Colors.grey[200],
-  //       borderRadius: BorderRadius.circular(8),
-  //     ),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-  //       children: [
-  //         Column(
-  //           children: [
-  //             Text(student.studentData!.name.toString()),
-  //             Text(student.studentData!.age.toString()),
-  //             Text(student.studentData!.subject.toString()),
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 }
