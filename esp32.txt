@@ -1,0 +1,143 @@
+#include <WiFi.h>
+#include <NTPClient.h>
+#include <WiFiUdp.h>
+#include <FirebaseClient.h>
+#include <WiFiClientSecure.h>
+
+#define WIFI_SSID "Galaxy A51 FC88"
+#define WIFI_PASSWORD "kgyy5968"
+
+// The API key can be obtained from Firebase console > Project Overview > Project settings.
+#define API_KEY "AIzaSyBvF_9xNzuDPonuZ8F2Y2g_fCXLfvHu8UE"
+
+// User Email and password that already registerd or added in your project.
+#define USER_EMAIL "rtdbtest@gmail.com"
+#define USER_PASSWORD "123456"
+#define DATABASE_URL "https://fireb-1703f-default-rtdb.asia-southeast1.firebasedatabase.app/"
+
+DefaultNetwork network;
+
+UserAuth user_auth(API_KEY, USER_EMAIL, USER_PASSWORD);
+
+FirebaseApp app;
+
+WiFiClientSecure ssl_client;
+
+using AsyncClient = AsyncClientClass;
+
+AsyncClient aClient(ssl_client, getNetwork(network));
+
+RealtimeDatabase Database;
+
+AsyncResult aResult_no_callback;
+
+unsigned long ms = 0;
+
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "pool.ntp.org", 7 * 3600);  // 7*3600 for GMT+7 timezone
+
+void setup() {
+
+  Serial.begin(115200);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+  Serial.print("Connecting to Wi-Fi");
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    delay(300);
+  }
+  Serial.println();
+  Serial.print("Connected with IP: ");
+  Serial.println(WiFi.localIP());
+  Serial.println();
+
+  initializeFirebase();
+
+  timeClient.begin();
+}
+
+void loop() {
+  // The async task handler should run inside the main loop
+  // without blocking delay or bypassing with millis code blocks.
+
+  app.loop();
+
+  Database.loop();
+
+  timeClient.update();
+
+  sendDataFirebase(2000);  // Masukkan Delay kedalam Fungsi
+
+  printResult(aResult_no_callback);
+}
+
+void initializeFirebase() {
+
+  Firebase.printf("Firebase Client v%s\n", FIREBASE_CLIENT_VERSION);
+
+  Serial.println("Initializing app...");
+
+  ssl_client.setInsecure();
+
+  initializeApp(aClient, app, getAuth(user_auth), aResult_no_callback);
+
+  // Binding the FirebaseApp for authentication handler.
+  // To unbind, use Database.resetApp();
+  app.getApp<RealtimeDatabase>(Database);
+
+  Database.url(DATABASE_URL);
+}
+
+void sendDataFirebase(int delay) {
+  if (millis() - ms > delay && app.ready())  // Kirim data setiap 2 Detik
+  {
+    ms = millis();
+
+    Serial.println("Asynchronous Push... ");
+
+    // Generate random values
+    int randomPH = random(0, 15);
+    int randomTemp = random(-75, 76);
+    int randomHumidity = random(0, 101);
+
+    // Get local timestamp
+    time_t rawTime = timeClient.getEpochTime();
+    struct tm *p_tm = localtime(&rawTime);
+    char timestamp[25];
+    strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%S", p_tm);
+
+    // Creating a JSON object
+    object_t json, obj1, obj2, obj3, obj4, obj5;
+    JsonWriter writer;
+
+    writer.create(obj1, "deviceID", string_t("1"));
+    writer.create(obj2, "pH", string_t(randomPH));
+    writer.create(obj3, "temp", string_t(randomTemp));
+    writer.create(obj4, "humidity", string_t(randomHumidity));
+    writer.create(obj5, "timestamp", string_t(timestamp));
+    writer.join(json, 5, obj1, obj2, obj3, obj4, obj5);
+
+    // Push JSON object
+    Database.push<object_t>(aClient, "/Sensors", json, aResult_no_callback);
+  }
+}
+
+void printResult(AsyncResult &aResult) {
+  if (aResult.isEvent()) {
+    Firebase.printf("Event task: %s, msg: %s, code: %d\n", aResult.uid().c_str(), aResult.appEvent().message().c_str(), aResult.appEvent().code());
+  }
+
+  if (aResult.isDebug()) {
+    Firebase.printf("Debug task: %s, msg: %s\n", aResult.uid().c_str(), aResult.debug().c_str());
+  }
+
+  if (aResult.isError()) {
+    Firebase.printf("Error task: %s, msg: %s, code: %d\n", aResult.uid().c_str(), aResult.error().message().c_str(), aResult.error().code());
+  }
+
+  if (aResult.available()) {
+    if (aResult.to<RealtimeDatabaseResult>().name().length())
+      Firebase.printf("task: %s, name: %s\n", aResult.uid().c_str(), aResult.to<RealtimeDatabaseResult>().name().c_str());
+    Firebase.printf("task: %s, payload: %s\n", aResult.uid().c_str(), aResult.c_str());
+  }
+}
